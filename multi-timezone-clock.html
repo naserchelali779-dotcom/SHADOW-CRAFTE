@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ساعة رقمية متعددة المناطق الزمنية</title>
+  <style>
+    body { font-family: 'Cairo', sans-serif; background: #191c28; color: #fff;}
+    h2 {text-align:center;}
+    .multi-clock { 
+      display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin: 36px 0;
+    }
+    .clock-box {
+      background: #21243b; border-radius: 12px; padding: 18px 36px;
+      min-width: 240px; min-height: 105px; text-align: center; box-shadow: 0 6px 20px #0003;
+    }
+    .city { font-size: 1.1em; color: #8ecae6; margin-bottom: 12px; font-weight: bold;}
+    .time { font-family: 'Consolas', monospace; font-size: 2.2em; letter-spacing: 2px; }
+    .date { font-size: .97em; color: #fbc02d; margin-top: 4px;}
+  </style>
+</head>
+<body>
+
+<h2>الساعة الرقمية حسب المنطقة الزمنية</h2>
+<div class="multi-clock" id="multiClock"></div>
+
+<script>
+  // قائمة المناطق الزمنية
+  const zones = [
+    { city: 'مكة', tz: 'Asia/Riyadh' },
+    { city: 'لندن', tz: 'Europe/London' },
+    { city: 'نيويورك', tz: 'America/New_York' },
+    { city: 'طوكيو', tz: 'Asia/Tokyo' }
+  ];
+
+  const root = document.getElementById('multiClock');
+
+  // إنشاء مربعات الساعة
+  zones.forEach((zone, i) => {
+    const box = document.createElement('div');
+    box.className = 'clock-box';
+    box.innerHTML = `
+      <div class="city">${zone.city}</div>
+      <div class="time" id="zone-t${i}">--:--:--</div>
+      <div class="date" id="zone-d${i}"></div>
+    `;
+    root.appendChild(box);
+  });
+
+  function updateClocks() {
+    zones.forEach((zone, i) => {
+      const now = new Date();
+      document.getElementById('zone-t'+i).textContent = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: zone.tz });
+      document.getElementById('zone-d'+i).textContent = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: zone.tz });
+    });
+  }
+  updateClocks();
+  setInterval(updateClocks, 1000);
+</script>
+</body>
+</html>
